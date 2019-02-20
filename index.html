@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;padding: 0;
+			}
+			#myCanvas{
+				margin: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="600" height="600"></canvas>
+	</body>
+	<script>
+		var myCanvas = document.getElementById("myCanvas");
+		var cxt = myCanvas.getContext("2d");
+		var deg = Math.PI/180;
+		function draw (){
+			cxt.beginPath();
+			cxt.arc(300,300,300,0,360*deg,true)
+			cxt.save();
+			cxt.fillStyle = "#5C6A88";
+			cxt.fill();
+			//偏移画布
+			cxt.translate(300,300);
+			cxt.strokeStyle = "#000"
+			cxt.lineWidth = 5;
+			for(var i = 0 ; i<60; i++){
+				cxt.save();
+				cxt.rotate(6*i*deg);
+				cxt.beginPath();
+				cxt.moveTo(260,0);
+				if(i%5==0){
+					cxt.lineTo(290,0);
+				}else{
+					cxt.lineTo(280,0)
+				}
+				cxt.stroke();
+				cxt.restore();
+			}
+			//恢复坐标系
+			cxt.restore();
+		}
+		draw();
+		//绘制表针
+		function drawClock(){
+			var deg =Math.PI/180;
+			var date1 = new Date();
+			var hours = date1.getHours();
+			var minutes = date1.getMinutes();
+			var second = date1.getSeconds();
+			//计算旋转角度
+			var hoursdeg = hours * 30 * deg + minutes * 6 * deg / 12 + second * 6 * deg / 12 / 60
+			var minutesdeg = minutes*6*deg+second*6*deg/60;
+			var seconddeg = second*6*deg;
+			cxt.save();
+			//移动坐标系
+			cxt.translate(300,300);
+			cxt.rotate(-90*deg);
+			cxt.save();
+			//绘制时针
+			cxt.rotate(hoursdeg);
+			cxt.beginPath();
+			cxt.moveTo(0,0)
+			cxt.lineTo(100,0);
+			cxt.save();
+			cxt.lineWidth = 8;
+			cxt.strokeStyle = "#000";
+			cxt.stroke();
+			cxt.restore();
+			cxt.restore();
+			//还原画布
+			//保存画布
+			cxt.save();
+			cxt.rotate(minutesdeg);
+			cxt.beginPath();
+			cxt.moveTo(0,0);
+			cxt.lineTo(160,0);
+			cxt.save();
+			cxt.lineWidth = 5;
+			cxt.strokeStyle = "#000";
+			cxt.stroke();
+			cxt.restore();
+			cxt.restore();
+//			还原画布
+			//保存画布
+			cxt.save();
+			cxt.rotate(seconddeg);
+			cxt.beginPath();
+			cxt.moveTo(0,0);
+			cxt.lineTo(200,0);
+			cxt.save();
+			cxt.lineWidth = 3;
+			cxt.strokeStyle = "#FF0000";
+			cxt.stroke();
+			cxt.restore();
+			cxt.restore();
+			//最初始的状态
+			cxt.restore();
+		}
+		drawClock();
+		setInterval(function(){
+			cxt.clearRect(0,0,myCanvas.width,myCanvas.height);
+			draw();
+			drawClock();
+		},1000)
+	</script>
+</html>
